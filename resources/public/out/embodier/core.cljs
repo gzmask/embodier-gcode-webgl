@@ -124,3 +124,15 @@
 
 (defn ^:export run []
   (reagent/render-component [app] (.-body js/document)))
+
+(reagent/render-component [app] (.-body js/document))
+
+(defn draganddrop []
+  (let [dd (.getElementById js/document "file-dropper")]
+    (.addEventListener dd "dragover", #(debugger "fu"), false)
+    (.addEventListener dd "drop", #(debugger "fuu"), false)
+  ))
+
+(draganddrop)
+
+  
