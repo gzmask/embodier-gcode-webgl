@@ -24,8 +24,14 @@
     [:div.col-md-1.col-md-offset-2 {:style {:background-color "#ccc"}} [about]]
     [:div.col-md-1 {:style {:background-color "#ccc"}} [github]]])
 
+(defn debugger [t]
+  (.log js/console t))
+
 (defn upload-button []
-  [:button#upload-button {:style {:color "#555"}} "upload file"])
+  [:input#upload-button {:type "file" 
+                         :name "files[]"
+                         :style {:color "#555"}
+                         :on-change #(debugger (aget (.. % -target -files) 0))}])
 
 (defn file-dropper []
   [:div 
