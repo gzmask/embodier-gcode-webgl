@@ -25,10 +25,24 @@
     [:div.col-md-1.col-md-offset-2 {:style {:background-color "#ccc"}} [about]]
     [:div.col-md-1 {:style {:background-color "#ccc"}} [github]]])
 
+(defn layered [str-ary]
+  (partition-by (fn [s] 
+                  (if (re-find (re-pattern "^G1.*Z.*") s)
+                    false
+                    true))
+                str-ary))
+
+(defn filterG1 [str-ary]
+  (filter (fn [s] 
+            (if (re-find (re-pattern "^G1.*") s)
+              true
+              false)) 
+          str-ary))
+
 (defn readFile [file] 
   (let [raw-str (-> file .-target .-result)]
-  (.log js/console (s/split-lines raw-str))
-  ))
+    (doseq [ary (layered (filterG1 (s/split-lines raw-str)))]
+      (.log js/console (print-str ary)))))
 
 (defn setOnLoad [f]
   (let [reader (js/FileReader.)] 
