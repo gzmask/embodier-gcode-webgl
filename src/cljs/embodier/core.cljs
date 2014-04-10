@@ -1,5 +1,6 @@
 (ns embodier.core
   (:require 
+    [clojure.string :as s]
     [goog.events :as events]
     [secretary.core :as secretary :include-macros true :refer [defroute]]
     [reagent.core :as reagent :refer [atom]])
@@ -24,20 +25,27 @@
     [:div.col-md-1.col-md-offset-2 {:style {:background-color "#ccc"}} [about]]
     [:div.col-md-1 {:style {:background-color "#ccc"}} [github]]])
 
-(defn debugger [t]
-  (.log js/console t))
+(defn readFile [file] 
+  (let [raw-str (-> file .-target .-result)]
+  (.log js/console (s/split-lines raw-str))
+  ))
+
+(defn setOnLoad [f]
+  (let [reader (js/FileReader.)] 
+    (set! (.-onload reader) readFile)
+    (.readAsText reader f)))
 
 (defn upload-button []
   [:input#upload-button {:type "file" 
                          :name "files[]"
                          :style {:color "#555"}
-                         :on-change #(debugger (aget (.. % -target -files) 0))}])
+                         :on-change #(setOnLoad (aget (.. % -target -files) 0))}])
 
 (defn file-dropper []
   [:div 
     [:div.row 
      [:div.col-md-4.col-md-offset-1 
-      [:div#file-dropper.bcircle.circle_file [:span.glyphicon.glyphicon-hdd] " Drop file here" ]]]
+      [:div#file-dropper.bcircle.circle_file [:span.glyphicon.glyphicon-hdd] " Upload file here"]]]
     [:div.row 
      [:div.col-md-3.col-md-offset-3 [upload-button]]]])
 
@@ -122,17 +130,5 @@
 
 (.setEnabled history true)
 
-(defn ^:export run []
-  (reagent/render-component [app] (.-body js/document)))
-
 (reagent/render-component [app] (.-body js/document))
 
-(defn draganddrop []
-  (let [dd (.getElementById js/document "file-dropper")]
-    (.addEventListener dd "dragover", #(debugger "fu"), false)
-    (.addEventListener dd "drop", #(debugger "fuu"), false)
-  ))
-
-(draganddrop)
-
-  
