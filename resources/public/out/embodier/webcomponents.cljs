@@ -57,7 +57,6 @@
 
 (defn control-range! [name min max]
   [:div.col-md-12 [:div.input-group 
-                   [:span.input-group-addon name ": " @current-layer-num]
                    [:input {:type "range" 
                             :name name 
                             :value @current-layer-num 
@@ -68,7 +67,7 @@
                             :min min :max max
                             :style {:padding-top "4px"}
                             }]
-                   [:span.input-group-addon max]]])
+                   [:span.input-group-addon name ": " @current-layer-num]]])
 
 (defn layer-viewer []
   [:div#layer-view.row 

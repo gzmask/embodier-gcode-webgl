@@ -85,7 +85,7 @@
     (set! (.-innerHTML dom) "")
     (.appendChild dom (.-domElement renderer))
     (.add scene (draw-line (nth @layers current-layer) 0x00ff00))
-    (loop [i (dec current-layer)]
+    (comment loop [i (dec current-layer)]
       (if (< i 0)
         nil
         (recur (do (.add scene (draw-line (nth @layers i) 0x0000aa))
