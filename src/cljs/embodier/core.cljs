@@ -1,6 +1,7 @@
 (ns embodier.core
   (:require 
     [embodier.webcomponents :as web]
+    [embodier.canvasdraw :as draw]
     [goog.events :as events]
     [secretary.core :as secretary :include-macros true :refer [defroute]]
     [reagent.core :as reagent])
@@ -9,14 +10,14 @@
 
 (secretary/set-config! :prefix "#")
 
-(defroute "/upload" []
+(defroute upload "/upload" []
   (reset! web/routes (assoc web/default :upload-file true)))
 
-(defroute "/layers" []
+(defroute layers "/layers" []
   (reset! web/routes (assoc web/default :layer-view true)))
 
 (defroute "/" []
-  (reset! web/routes web/default))
+  (reset! web/routes (assoc web/default :upload-file true)))
 
 (def history (History.))
 
@@ -26,4 +27,3 @@
 (.setEnabled history true)
 
 (reagent/render-component [web/app] (.-body js/document))
-

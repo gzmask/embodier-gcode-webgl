@@ -1,12 +1,16 @@
 (ns embodier.webcomponents
   (:require 
     [embodier.fileapi :as file]
+    [embodier.canvasdraw :as draw]
     [reagent.core :refer [atom]]))
 
 (def default {:upload-file false
               :layer-view false})
 
 (def routes (atom (assoc default :upload-file true)))
+(def layers (atom nil))
+(def current-layer-num (atom 0))
+(def layer-count (atom 0))
 
 (defn logo []
   [:div {:style {:font-size "35px"}} "Embodier"])
@@ -27,7 +31,7 @@
   [:input#upload-button {:type "file" 
                          :name "files[]"
                          :style {:color "#555"}
-                         :on-change #(file/setOnLoad (aget (.. % -target -files) 0))}])
+                         :on-change #(file/setOnLoad (aget (.. % -target -files) 0) layers)}])
 
 (defn file-dropper []
   [:div 
@@ -37,29 +41,34 @@
     [:div.row 
      [:div.col-md-3.col-md-offset-3 [upload-button]]]])
 
+(defn load-canvas [cb]
+  [:img {:src "data:image/gif;base64,R0lGODlhAQABAIAAAP///wAAACwAAAAAAQABAAACAkQBADs="
+         :on-load cb}])
+
 (defn layer-view-before []
-  [:div#layer-view-before.bcircle.circle_layer])
+  [:div#layer-view-before.bcircle.circle_layer [:br]])
 
 (defn layer-view-after []
-  [:div#layer-view-after.bcircle.circle_layer])
+  [:div#layer-view-after.bcircle.circle_layer [:br]])
 
 (defn control-cb [name]
   [:div.col-md-6 [:div.input-group [:span.input-group-addon [:input {:type "checkbox"}]]
      [:span.input-group-addon name]]])
 
 (defn control-range! [name min max]
-  (let [layer (atom min)]
-    (fn [] 
-      [:div.col-md-12 [:div.input-group 
-                       [:span.input-group-addon name ": " @layer]
-                       [:input {:type "range" 
-                                :name name 
-                                :value @layer 
-                                :on-change #(reset! layer (-> % .-target .-value)) 
-                                :min min :max max
-                                :style {:padding-top "4px"}
-                                }]
-                       [:span.input-group-addon max]]])))
+  [:div.col-md-12 [:div.input-group 
+                   [:span.input-group-addon name ": " @current-layer-num]
+                   [:input {:type "range" 
+                            :name name 
+                            :value @current-layer-num 
+                            :on-change #(do 
+                                          (reset! current-layer-num (-> % .-target .-value)) 
+                                          (draw/show-layer layers "layer-view-before" @current-layer-num)
+                                          (draw/show-layer layers "layer-view-after" @current-layer-num))
+                            :min min :max max
+                            :style {:padding-top "4px"}
+                            }]
+                   [:span.input-group-addon max]]])
 
 (defn layer-viewer []
   [:div#layer-view.row 
@@ -78,7 +87,7 @@
       [control-cb "control three"]
       [control-cb "control four"]]
     [:div.row
-     [control-range! "layer" 0 100]]
+     [control-range! "layer" 0 (dec (count @layers))]]
     ]])
 
 (defn timer-component []

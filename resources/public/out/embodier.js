@@ -10,7 +10,8 @@ goog.addDependency("../reagent/impl/batching.js", ['reagent.impl.batching'], ['c
 goog.addDependency("../reagent/impl/component.js", ['reagent.impl.component'], ['cljs.core', 'reagent.debug', 'reagent.impl.util', 'reagent.impl.batching', 'reagent.ratom']);
 goog.addDependency("../reagent/impl/template.js", ['reagent.impl.template'], ['cljs.core', 'reagent.debug', 'clojure.string', 'reagent.impl.component', 'reagent.impl.util', 'reagent.impl.batching', 'reagent.ratom']);
 goog.addDependency("../reagent/core.js", ['reagent.core'], ['reagent.impl.template', 'cljs.core', 'reagent.impl.component', 'reagent.impl.util', 'reagent.impl.batching', 'reagent.ratom']);
-goog.addDependency("../embodier/webcomponents.js", ['embodier.webcomponents'], ['cljs.core', 'embodier.fileapi', 'reagent.core']);
+goog.addDependency("../embodier/canvasdraw.js", ['embodier.canvasdraw'], ['cljs.core']);
+goog.addDependency("../embodier/webcomponents.js", ['embodier.webcomponents'], ['cljs.core', 'embodier.fileapi', 'reagent.core', 'embodier.canvasdraw']);
 goog.addDependency("../clojure/walk.js", ['clojure.walk'], ['cljs.core']);
 goog.addDependency("../secretary/core.js", ['secretary.core'], ['cljs.core', 'clojure.walk', 'clojure.string']);
-goog.addDependency("../embodier/core.js", ['embodier.core'], ['goog.history.EventType', 'embodier.webcomponents', 'cljs.core', 'secretary.core', 'goog.History', 'reagent.core', 'goog.events']);
+goog.addDependency("../embodier/core.js", ['embodier.core'], ['goog.history.EventType', 'embodier.webcomponents', 'cljs.core', 'secretary.core', 'goog.History', 'reagent.core', 'embodier.canvasdraw', 'goog.events']);

@@ -1,6 +1,6 @@
 {"version":3,
  "file":"/Users/gzmask/project/embodier/resources/public/out/.js",
- "sources":["webcomponents.cljs"],
+ "sources":["canvasdraw.cljs"],
  "lineCount":3,
  "mappings":"",
  "names":[]}
