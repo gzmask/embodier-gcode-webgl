@@ -31,7 +31,13 @@
   (let [geo (THREE.Geometry.)
         mat (THREE.LineBasicMaterial. (clj->js {:color 0x00ff00}))
         line (THREE.Line. geo mat)
-        p-list (for [p points] (THREE.Vector3. (:x p) (:y p) (:z p)))] 
+        points- (filter (fn [p] (if (or (nil? (:x p))
+                                       (nil? (:y p))
+                                       (nil? (:z p)))
+                                 false
+                                 true))
+                        points)
+        p-list (for [p points-] (THREE.Vector3. (:x p) (:y p) (:z p)))] 
     (set!  
       (-> geo .-vertices) 
       (apply array p-list)) 
@@ -43,9 +49,6 @@
         height 480
         camera (THREE.PerspectiveCamera. 75 (/ width height) 0.1 1000)
         renderer (THREE.CanvasRenderer.)
-        line (draw-line '({:x -1 :y 0}
-                          {:x 0 :y 1}
-                          {:x 1 :y 0}))
         render (fn cb []
                  ;(js/requestAnimationFrame cb)
                  (.render renderer scene camera))
