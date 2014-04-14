@@ -2,30 +2,6 @@
 
 (def THREE js/THREE)
 
-(defn example []
-  (let [scene (THREE.Scene.)
-        width 640
-        height 480
-        camera (THREE.PerspectiveCamera. 75 (/ width height) 0.1 1000 )
-        renderer (THREE.CanvasRenderer.)
-        geometry (THREE.CubeGeometry. 1 1 1)
-        material (THREE.MeshBasicMaterial. (clj->js {:color 0x00ff00}))
-        cube (THREE.Mesh. geometry material)
-        render (fn cb []
-                   (js/requestAnimationFrame cb) 
-                   (set! (.-x (.-rotation cube))  (+ 0.1 (.-x (.-rotation cube))) )
-                   (set! (.-y (.-rotation cube))  (+ 0.1 (.-y (.-rotation cube))) )
-                   (.render renderer scene camera)
-                 ) 
-        ]
-    (.setSize renderer width height)
-    (.appendChild (.getElementById js/document "layer-view-before") (.-domElement renderer) )
-    (.add scene cube)
-    (set! (.-z (.-position camera))  5)
-    (render)
-    )
-  )
-
 (defn draw-line [points color]
   "given a collection of points ({:x ?, :y ?}, ...), returns a threejs line"
   (let [geo (THREE.Geometry.)

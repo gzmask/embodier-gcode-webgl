@@ -89,13 +89,6 @@
      [control-range! "layer" (draw/first-layer-num @layers) (dec (count @layers))]]
     ]])
 
-(defn timer-component []
-  (let [seconds-elapsed (atom 0)]
-    (fn []
-      (js/setTimeout #(swap! seconds-elapsed inc) 1000)
-      [:div
-       "Seconds Elapsed: " @seconds-elapsed])))
-
 (defn app []
   [:div 
    [header]
@@ -105,5 +98,4 @@
    (for [x (range 4)] ^{:key x} [:br])
    (if (:layer-view @routes) [layer-viewer])
    (if (:upload-file @routes) [file-dropper])
-   [timer-component]
    ])
