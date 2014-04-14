@@ -64,7 +64,7 @@
                             :on-change #(do 
                                           (reset! current-layer-num (-> % .-target .-value)) 
                                           (draw/show-layer layers "layer-view-before" @current-layer-num)
-                                          (draw/show-layer layers "layer-view-after" @current-layer-num))
+                                          (comment draw/show-layer layers "layer-view-after" @current-layer-num))
                             :min min :max max
                             :style {:padding-top "4px"}
                             }]

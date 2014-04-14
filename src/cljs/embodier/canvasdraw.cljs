@@ -26,10 +26,10 @@
     )
   )
 
-(defn draw-line [points]
+(defn draw-line [points color]
   "given a collection of points ({:x ?, :y ?}, ...), returns a threejs line"
   (let [geo (THREE.Geometry.)
-        mat (THREE.LineBasicMaterial. (clj->js {:color 0x00ff00}))
+        mat (THREE.LineBasicMaterial. (clj->js {:color color}))
         line (THREE.Line. geo mat)
         points- (filter (fn [p] (if (or (nil? (:x p))
                                        (nil? (:y p))
@@ -57,7 +57,12 @@
     (.replaceChild (.getElementById js/document dom-id) 
                    (.-domElement renderer)
                    (.-firstChild (.getElementById js/document dom-id)))
-    (.add scene (draw-line (nth @layers current-layer)))
+    (.add scene (draw-line (nth @layers current-layer) 0x00ff00))
+    (loop [i (dec current-layer)]
+      (if (< i 0)
+        nil
+        (recur (do (.add scene (draw-line (nth @layers i) 0x0000aa))
+                   (dec i)))))
     (set! (.-y (.-position camera))  -25)
     (set! (.-z (.-position camera))  25)
     (.lookAt camera (THREE.Vector3. 0 0 10))
