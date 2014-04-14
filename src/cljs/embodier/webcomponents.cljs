@@ -46,10 +46,10 @@
          :on-load cb}])
 
 (defn layer-view-before []
-  [:div#layer-view-before.bcircle.circle_layer [:br]])
+  [:div#layer-view-before.bcircle.circle_layer])
 
 (defn layer-view-after []
-  [:div#layer-view-after.bcircle.circle_layer [:br]])
+  [:div#layer-view-after.bcircle.circle_layer])
 
 (defn control-cb [name]
   [:div.col-md-6 [:div.input-group [:span.input-group-addon [:input {:type "checkbox"}]]

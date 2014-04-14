@@ -56,9 +56,8 @@
       num
       (recur (inc num)))))
 
-(defn trackball-control [cam render dom-id]
-  (let [dom (.getElementById js/document dom-id)
-        control (THREE.TrackballControls. cam dom)]
+(defn trackball-control [cam render dom]
+  (let [control (THREE.TrackballControls. cam dom)]
     (set! (.-rotateSpeed control) 1.0)
     (set! (.-zoomSpeed control) 1.2)
     (set! (.-panSpeed control) 0.8)
@@ -71,20 +70,20 @@
     control))
 
 (defn show-layer [layers dom-id current-layer]
-  (let [scene (THREE.Scene.)
+  (let [dom (.getElementById js/document dom-id)
+        scene (THREE.Scene.)
         width 640
         height 480
         camera (THREE.PerspectiveCamera. 75 (/ width height) 0.1 1000)
         renderer (THREE.CanvasRenderer.)
         render #(.render renderer scene camera)
-        control (trackball-control camera render dom-id)
+        control (trackball-control camera render dom)
         animate (fn an[] 
                  (js/requestAnimationFrame an)
                  (.update control))]
     (.setSize renderer width height)
-    (.replaceChild (.getElementById js/document dom-id) 
-                   (.-domElement renderer)
-                   (.-firstChild (.getElementById js/document dom-id)))
+    (set! (.-innerHTML dom) "")
+    (.appendChild dom (.-domElement renderer))
     (.add scene (draw-line (nth @layers current-layer) 0x00ff00))
     (loop [i (dec current-layer)]
       (if (< i 0)
