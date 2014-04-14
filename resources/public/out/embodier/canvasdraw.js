@@ -22,16 +22,16 @@ return (function (p){if(((new cljs.core.Keyword(null,"x","x",1013904362).cljs$co
 }
 });})(geo,mat,line))
 ,points);var p_list = (function (){var iter__4160__auto__ = ((function (geo,mat,line,points_){
-return (function iter__5357(s__5358){return (new cljs.core.LazySeq(null,((function (geo,mat,line,points_){
-return (function (){var s__5358__$1 = s__5358;while(true){
-var temp__4092__auto__ = cljs.core.seq.call(null,s__5358__$1);if(temp__4092__auto__)
-{var s__5358__$2 = temp__4092__auto__;if(cljs.core.chunked_seq_QMARK_.call(null,s__5358__$2))
-{var c__4158__auto__ = cljs.core.chunk_first.call(null,s__5358__$2);var size__4159__auto__ = cljs.core.count.call(null,c__4158__auto__);var b__5360 = cljs.core.chunk_buffer.call(null,size__4159__auto__);if((function (){var i__5359 = 0;while(true){
-if((i__5359 < size__4159__auto__))
-{var p = cljs.core._nth.call(null,c__4158__auto__,i__5359);cljs.core.chunk_append.call(null,b__5360,(new embodier.canvasdraw.THREE.Vector3(new cljs.core.Keyword(null,"x","x",1013904362).cljs$core$IFn$_invoke$arity$1(p),new cljs.core.Keyword(null,"y","y",1013904363).cljs$core$IFn$_invoke$arity$1(p),new cljs.core.Keyword(null,"z","z",1013904364).cljs$core$IFn$_invoke$arity$1(p))));
+return (function iter__5626(s__5627){return (new cljs.core.LazySeq(null,((function (geo,mat,line,points_){
+return (function (){var s__5627__$1 = s__5627;while(true){
+var temp__4092__auto__ = cljs.core.seq.call(null,s__5627__$1);if(temp__4092__auto__)
+{var s__5627__$2 = temp__4092__auto__;if(cljs.core.chunked_seq_QMARK_.call(null,s__5627__$2))
+{var c__4158__auto__ = cljs.core.chunk_first.call(null,s__5627__$2);var size__4159__auto__ = cljs.core.count.call(null,c__4158__auto__);var b__5629 = cljs.core.chunk_buffer.call(null,size__4159__auto__);if((function (){var i__5628 = 0;while(true){
+if((i__5628 < size__4159__auto__))
+{var p = cljs.core._nth.call(null,c__4158__auto__,i__5628);cljs.core.chunk_append.call(null,b__5629,(new embodier.canvasdraw.THREE.Vector3(new cljs.core.Keyword(null,"x","x",1013904362).cljs$core$IFn$_invoke$arity$1(p),new cljs.core.Keyword(null,"y","y",1013904363).cljs$core$IFn$_invoke$arity$1(p),new cljs.core.Keyword(null,"z","z",1013904364).cljs$core$IFn$_invoke$arity$1(p))));
 {
-var G__5361 = (i__5359 + 1);
-i__5359 = G__5361;
+var G__5630 = (i__5628 + 1);
+i__5628 = G__5630;
 continue;
 }
 } else
@@ -40,12 +40,12 @@ continue;
 break;
 }
 })())
-{return cljs.core.chunk_cons.call(null,cljs.core.chunk.call(null,b__5360),iter__5357.call(null,cljs.core.chunk_rest.call(null,s__5358__$2)));
+{return cljs.core.chunk_cons.call(null,cljs.core.chunk.call(null,b__5629),iter__5626.call(null,cljs.core.chunk_rest.call(null,s__5627__$2)));
 } else
-{return cljs.core.chunk_cons.call(null,cljs.core.chunk.call(null,b__5360),null);
+{return cljs.core.chunk_cons.call(null,cljs.core.chunk.call(null,b__5629),null);
 }
 } else
-{var p = cljs.core.first.call(null,s__5358__$2);return cljs.core.cons.call(null,(new embodier.canvasdraw.THREE.Vector3(new cljs.core.Keyword(null,"x","x",1013904362).cljs$core$IFn$_invoke$arity$1(p),new cljs.core.Keyword(null,"y","y",1013904363).cljs$core$IFn$_invoke$arity$1(p),new cljs.core.Keyword(null,"z","z",1013904364).cljs$core$IFn$_invoke$arity$1(p))),iter__5357.call(null,cljs.core.rest.call(null,s__5358__$2)));
+{var p = cljs.core.first.call(null,s__5627__$2);return cljs.core.cons.call(null,(new embodier.canvasdraw.THREE.Vector3(new cljs.core.Keyword(null,"x","x",1013904362).cljs$core$IFn$_invoke$arity$1(p),new cljs.core.Keyword(null,"y","y",1013904363).cljs$core$IFn$_invoke$arity$1(p),new cljs.core.Keyword(null,"z","z",1013904364).cljs$core$IFn$_invoke$arity$1(p))),iter__5626.call(null,cljs.core.rest.call(null,s__5627__$2)));
 }
 } else
 {return null;
@@ -59,20 +59,55 @@ break;
 })();geo.vertices = cljs.core.apply.call(null,cljs.core.array,p_list);
 return line;
 });
+embodier.canvasdraw.first_layer_num = (function first_layer_num(layers){var num = 0;while(true){
+if((!(cljs.core.empty_QMARK_.call(null,cljs.core.filter.call(null,((function (num){
+return (function (p){if(((new cljs.core.Keyword(null,"x","x",1013904362).cljs$core$IFn$_invoke$arity$1(p) == null)) || ((new cljs.core.Keyword(null,"y","y",1013904363).cljs$core$IFn$_invoke$arity$1(p) == null)) || ((new cljs.core.Keyword(null,"z","z",1013904364).cljs$core$IFn$_invoke$arity$1(p) == null)))
+{return false;
+} else
+{return true;
+}
+});})(num))
+,cljs.core.nth.call(null,layers,num))))) || ((num > (cljs.core.count.call(null,layers) - 1))))
+{return num;
+} else
+{{
+var G__5631 = (num + 1);
+num = G__5631;
+continue;
+}
+}
+break;
+}
+});
+embodier.canvasdraw.trackball_control = (function trackball_control(cam,render,dom_id){var dom = document.getElementById(dom_id);var control = (new embodier.canvasdraw.THREE.TrackballControls(cam,dom));control.rotateSpeed = 1.0;
+control.zoomSpeed = 1.2;
+control.panSpeed = 0.8;
+control.noZoom = false;
+control.noPan = false;
+control.staticMoving = true;
+control.dynamicDampingFactor = 0.3;
+control.keys = [65,83,68];
+control.addEventListener("change",render);
+return control;
+});
 embodier.canvasdraw.show_layer = (function show_layer(layers,dom_id,current_layer){var scene = (new embodier.canvasdraw.THREE.Scene());var width = 640;var height = 480;var camera = (new embodier.canvasdraw.THREE.PerspectiveCamera(75,(width / height),0.1,1000));var renderer = (new embodier.canvasdraw.THREE.CanvasRenderer());var render = ((function (scene,width,height,camera,renderer){
-return (function cb(){return renderer.render(scene,camera);
+return (function (){return renderer.render(scene,camera);
 });})(scene,width,height,camera,renderer))
+;var control = embodier.canvasdraw.trackball_control.call(null,camera,render,dom_id);var animate = ((function (scene,width,height,camera,renderer,render,control){
+return (function an(){requestAnimationFrame(an);
+return control.update();
+});})(scene,width,height,camera,renderer,render,control))
 ;renderer.setSize(width,height);
 document.getElementById(dom_id).replaceChild(renderer.domElement,document.getElementById(dom_id).firstChild);
 scene.add(embodier.canvasdraw.draw_line.call(null,cljs.core.nth.call(null,cljs.core.deref.call(null,layers),current_layer),65280));
-var i_5362 = (current_layer - 1);while(true){
-if((i_5362 < 0))
+var i_5632 = (current_layer - 1);while(true){
+if((i_5632 < 0))
 {} else
 {{
-var G__5363 = (function (){scene.add(embodier.canvasdraw.draw_line.call(null,cljs.core.nth.call(null,cljs.core.deref.call(null,layers),i_5362),170));
-return (i_5362 - 1);
+var G__5633 = (function (){scene.add(embodier.canvasdraw.draw_line.call(null,cljs.core.nth.call(null,cljs.core.deref.call(null,layers),i_5632),170));
+return (i_5632 - 1);
 })();
-i_5362 = G__5363;
+i_5632 = G__5633;
 continue;
 }
 }
@@ -81,7 +116,7 @@ break;
 camera.position.y = -25;
 camera.position.z = 25;
 camera.lookAt((new embodier.canvasdraw.THREE.Vector3(0,0,10)));
-return render.call(null);
+return animate.call(null);
 });
 
 //# sourceMappingURL=canvasdraw.js.map

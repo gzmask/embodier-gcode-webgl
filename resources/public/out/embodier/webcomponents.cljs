@@ -87,7 +87,7 @@
       [control-cb "control three"]
       [control-cb "control four"]]
     [:div.row
-     [control-range! "layer" 0 (dec (count @layers))]]
+     [control-range! "layer" (draw/first-layer-num @layers) (dec (count @layers))]]
     ]])
 
 (defn timer-component []
