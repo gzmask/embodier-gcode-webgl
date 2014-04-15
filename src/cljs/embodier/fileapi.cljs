@@ -60,12 +60,10 @@
     (reset! layers (-> raw-str s/split-lines filterG1 layered cmd-map collapseZ))
     ;(.log js/console (print-str (s/join "\n" @layers)))
     ;(.log js/console (print-str (s/join "\n" (nth @layers 0))))
-    ;(.log js/console (print-str (s/join "\n" (nth @layers 1))))
     ;(.log js/console (print-str (s/join "\n" (nth @layers 2))))
-    ;(.log js/console (print-str (s/join "\n" (nth @layers 3))))
     ))
 
-(defn setOnLoad [f l]
+(defn setOnLoad [f layers]
   (let [reader (js/FileReader.)] 
-    (set! (.-onload reader) (partial readFile l))
+    (set! (.-onload reader) (partial readFile layers))
     (.readAsText reader f)))

@@ -8,12 +8,14 @@
   (:import [goog History]
            [goog.history EventType]))
 
+(reagent/render-component [web/app] (.-body js/document))
+
 (secretary/set-config! :prefix "#")
 
 (defroute upload "/upload" []
   (reset! web/routes (assoc web/default :upload-file true)))
 
-(defroute layers "/layers" []
+(defroute layers "/layers" [] 
   (reset! web/routes (assoc web/default :layer-view true)))
 
 (defroute "/" []
@@ -26,4 +28,4 @@
 
 (.setEnabled history true)
 
-(reagent/render-component [web/app] (.-body js/document))
+

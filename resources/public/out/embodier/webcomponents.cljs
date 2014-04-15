@@ -46,7 +46,8 @@
          :on-load cb}])
 
 (defn layer-view-before []
-  [:div#layer-view-before.bcircle.circle_layer])
+  [:div#layer-view-before.bcircle.circle_layer
+   [load-canvas #(draw/show-layer layers "layer-view-before" current-layer-num)]])
 
 (defn layer-view-after []
   [:div#layer-view-after.bcircle.circle_layer])
@@ -60,10 +61,9 @@
                    [:input {:type "range" 
                             :name name 
                             :value @current-layer-num 
-                            :on-change #(do 
-                                          (reset! current-layer-num (-> % .-target .-value)) 
-                                          (draw/show-layer layers "layer-view-before" @current-layer-num)
-                                          (comment draw/show-layer layers "layer-view-after" @current-layer-num))
+                            :on-change #(do
+                                          (reset! current-layer-num (-> % .-target .-value))
+                                          (draw/show-layer layers "layer-view-before" current-layer-num))
                             :min min :max max
                             :style {:padding-top "4px"}
                             }]
@@ -96,6 +96,6 @@
    [:a {:href "#/upload"} "upload"][:br]
    [:a {:href "#/layers"} "layers"][:br]
    (for [x (range 4)] ^{:key x} [:br])
-   (if (:layer-view @routes) [layer-viewer])
+   (if (:layer-view @routes) [layer-viewer]) 
    (if (:upload-file @routes) [file-dropper])
    ])
