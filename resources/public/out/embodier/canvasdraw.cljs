@@ -21,17 +21,20 @@
     partics))
 
 (defn draw-line [points color]
-  "given a collection of points ({:x ?, :y ?}, ...), returns a threejs line"
+  "given a collection of points ({:x ? :y ? :z ? :e ?} ...), returns a threejs line"
   (let [geo (THREE.Geometry.)
         mat (THREE.LineBasicMaterial. (clj->js {:color color}))
         line (THREE.Line. geo mat)
-        points- (filter (fn [p] (if (or (nil? (:x p))
-                                       (nil? (:y p))
-                                       (nil? (:z p)))
-                                 false
-                                 true))
+        points- (filter (fn [p] 
+                          "filter out points missing one of x,y,z,e"
+                          (if (or (nil? (:x p)) 
+                                  (nil? (:y p))
+                                  (nil? (:z p))
+                                  (nil? (:e p))) 
+                            false
+                            true))
                         points)
-        p-list (for [p points-] (THREE.Vector3. (:x p) (:y p) (:z p)))] 
+        p-list (for [p points-] (THREE.Vector3. (:x p) (:y p) (:z p)))]
     (set!  
       (-> geo .-vertices) 
       (apply array p-list)) 

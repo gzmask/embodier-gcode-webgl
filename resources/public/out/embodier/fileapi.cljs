@@ -2,16 +2,49 @@
   (:require 
     [clojure.string :as s]))
 
-(defn collapseZ [cmds]
+(defn last-extrusion [layers-cmds]
+  "stores extrusions into each command"
+  (for [cmds layers-cmds]
+    (loop [resultcmds nil
+           counter 0
+           last-extrusion 0]
+      (if (= counter (count cmds))
+        resultcmds
+        (recur 
+          (cons (assoc (nth cmds counter) :e- last-extrusion) resultcmds)
+          (inc counter)
+          (:e (nth cmds counter)))))))
+
+(comment defn extrusionize [layers-cmds]
+  "partition each layer cmds according to extrusion directions(position/negative :e)"
+  (for [cmds layers-cmds]
+    (partition-by (fn [cmd]
+                    "if this cmd gives a positive extrusion"
+                    (if (> (:e cmd) (:e- cmd))
+                      true
+                      false))
+                  cmds)))
+
+(defn extrusionize [layers-cmds]
+  "filter each layer cmds according to extrusion directions"
+  (for [cmds layers-cmds]
+    (filter (fn [cmd] 
+              "if this cmd gives a positive extrusion" 
+              (if (> (:e cmd) (:e- cmd)) 
+                true
+                false)) 
+            cmds)))
+
+(defn collapseZ [layers-cmds]
   "collapse :z to all points"
   (loop [resultcmds nil
          counter 0
          last-z 0]
-    (if (= counter (count cmds))
+    (if (= counter (count layers-cmds))
       (reverse (filter #(if (nil? (first %)) false true) resultcmds))
       (recur 
         (cons 
-          (for [cmd (nth cmds counter)] 
+          (for [cmd (nth layers-cmds counter)] 
             (if (nil? (:z cmd)) 
               (if (or (not (nil? (:x cmd))) (not (nil? (:y cmd))))
                 (assoc cmd :z last-z)
@@ -19,14 +52,14 @@
               nil))
           resultcmds)
         (inc counter)
-        (if (= (:z (first (nth cmds counter))) nil) 
+        (if (= (:z (first (nth layers-cmds counter))) nil) 
           last-z 
-          (:z (first (nth cmds counter))))))))
+          (:z (first (nth layers-cmds counter))))))))
 
-(defn cmd-map [cmds]
+(defn cmd-map [layers-cmds]
   "translate each command to a map like {:x 1, :y 2, ...}"
   (filter (complement empty?)
-    (for [part cmds]
+    (for [part layers-cmds]
       (filter (complement empty?)
         (for [cmd part]
           (apply merge (filter #(if (not= % nil) true false)
@@ -57,10 +90,10 @@
 
 (defn readFile [layers file] 
   (let [raw-str (-> file .-target .-result)]
-    (reset! layers (-> raw-str s/split-lines filterG1 layered cmd-map collapseZ))
+    (reset! layers (-> raw-str s/split-lines filterG1 layered cmd-map collapseZ last-extrusion extrusionize))
     ;(.log js/console (print-str (s/join "\n" @layers)))
-    ;(.log js/console (print-str (s/join "\n" (nth @layers 0))))
-    ;(.log js/console (print-str (s/join "\n" (nth @layers 2))))
+    ;(.log js/console (print-str (nth @layers 0)))
+    ;(.log js/console (print-str (nth @layers 2)))
     ))
 
 (defn setOnLoad [f layers]
