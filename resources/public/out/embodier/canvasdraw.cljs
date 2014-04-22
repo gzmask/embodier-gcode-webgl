@@ -82,6 +82,35 @@
             (.remove scene (aget children i))
             (dec i)))))))
 
+(defn NaN? [node]
+  (and (= (.call js/toString node) (str "[object Number]"))
+       (js/eval (str node " != +" node ))))
+
+(defn get-center [layers current-layer]
+  "given an array of {:x :y :z} points, find the center point"
+  (nth
+  (for [layer @layers]
+    (reduce (fn [p p-]
+              {:x (/ (+ 
+                       (if (NaN? (js/parseInt (:x p))) 0 
+                         (js/parseInt (:x p))) 
+                       (if (NaN? (js/parseInt (:x p-))) 0 
+                         (js/parseInt (:x p-))) 
+                       ) 2)
+               :y (/ (+ 
+                       (if (NaN? (js/parseInt (:y p))) 0 
+                         (js/parseInt (:y p))) 
+                       (if (NaN? (js/parseInt (:y p-))) 0 
+                         (js/parseInt (:y p-))) 
+                       ) 2)
+               :z (/ (+ 
+                       (if (NaN? (js/parseInt (:z p))) 0 
+                         (js/parseInt (:z p))) 
+                       (if (NaN? (js/parseInt (:z p-))) 0 
+                         (js/parseInt (:z p-))) 
+                       ) 2)}) 
+            {:x 0 :y 0 :z 0} layer))) @current-layer)
+
 (defn show-layer [layers dom-id current-layer]
   (let [dom (.getElementById js/document dom-id)
         scene (THREE.Scene.)
@@ -91,6 +120,7 @@
         renderer (THREE.WebGLRenderer.)
         render #(.render renderer scene camera)
         control (trackball-control camera render dom)
+        center-point (get-center layers current-layer)
         animate (fn an[] 
                   (js/requestAnimationFrame an)
                   (.update control)
@@ -99,8 +129,12 @@
     (set! (.-innerHTML dom) "")
     (.appendChild dom (.-domElement renderer)) 
     (update-scene scene layers current-layer) 
+    ;need a function to set camera to center
     (set! (.-y (.-position camera))  -25)
     (set! (.-z (.-position camera))  25)
-    (.lookAt camera (THREE.Vector3. 0 0 10))
+    (.lookAt camera (THREE.Vector3. 
+                      (:x center-point) 
+                      (:y center-point) 
+                      (:z center-point)))
     (animate)
     ))
