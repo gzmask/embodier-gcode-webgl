@@ -120,7 +120,7 @@
         renderer (THREE.WebGLRenderer.)
         render #(.render renderer scene camera)
         control (trackball-control camera render dom)
-        center-point (get-center layers current-layer)
+        center-point {:x 0 :y 0 :z 10}
         animate (fn an[] 
                   (js/requestAnimationFrame an)
                   (.update control)
