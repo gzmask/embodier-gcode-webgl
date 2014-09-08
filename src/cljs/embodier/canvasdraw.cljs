@@ -14,10 +14,10 @@
                                  false
                                  true))
                         points)
-        p-list (for [p points-] (THREE.Vector3. (:x p) (:y p) (:z p)))] 
-    (set!  
-      (-> geo .-vertices) 
-      (apply array p-list)) 
+        p-list (for [p points-] (THREE.Vector3. (:x p) (:y p) (:z p)))]
+    (set!
+      (-> geo .-vertices)
+      (apply array p-list))
     partics))
 
 (defn draw-line [points color]
@@ -25,31 +25,31 @@
   (let [geo (THREE.Geometry.)
         mat (THREE.LineBasicMaterial. (clj->js {:color color}))
         line (THREE.Line. geo mat)
-        points- (filter (fn [p] 
+        points- (filter (fn [p]
                           "filter out points missing one of x,y,z,e"
-                          (if (or (nil? (:x p)) 
+                          (if (or (nil? (:x p))
                                   (nil? (:y p))
                                   (nil? (:z p))
-                                  (nil? (:e p))) 
+                                  (nil? (:e p)))
                             false
                             true))
                         points)
         p-list (for [p points-] (THREE.Vector3. (:x p) (:y p) (:z p)))]
-    (set!  
-      (-> geo .-vertices) 
-      (apply array p-list)) 
+    (set!
+      (-> geo .-vertices)
+      (apply array p-list))
     line))
 
 (defn first-layer-num [layers]
   "given the layers of the model, return the number of first layer"
   (loop [num 0]
-    (if (or 
-          (not (empty?  (filter (fn [p] 
-                                  (if (or (nil? (:x p)) (nil? (:y p)) (nil? (:z p))) 
-                                    false 
-                                    true)) 
+    (if (or
+          (not (empty?  (filter (fn [p]
+                                  (if (or (nil? (:x p)) (nil? (:y p)) (nil? (:z p)))
+                                    false
+                                    true))
                                 (nth layers num))))
-          (> num (dec (count layers)))) 
+          (> num (dec (count layers))))
       num
       (recur (inc num)))))
 
@@ -69,7 +69,7 @@
 (defn update-scene [scene layers current-layer]
   (let [children (.-children scene)]
     (loop [i (dec (count children))]
-      (if (< i 0) 
+      (if (< i 0)
         (do
           (.add scene (draw-line (nth @layers @current-layer) 0x00ff00))
           (loop [i (dec @current-layer)]
@@ -77,7 +77,7 @@
               nil
               (recur (do (.add scene (draw-partics (nth @layers i) 0x0000aa))
                          (dec i))))))
-        (recur 
+        (recur
           (do
             (.remove scene (aget children i))
             (dec i)))))))
@@ -91,25 +91,25 @@
   (nth
   (for [layer @layers]
     (reduce (fn [p p-]
-              {:x (/ (+ 
-                       (if (NaN? (js/parseInt (:x p))) 0 
-                         (js/parseInt (:x p))) 
-                       (if (NaN? (js/parseInt (:x p-))) 0 
-                         (js/parseInt (:x p-))) 
+              {:x (/ (+
+                       (if (NaN? (js/parseInt (:x p))) 0
+                         (js/parseInt (:x p)))
+                       (if (NaN? (js/parseInt (:x p-))) 0
+                         (js/parseInt (:x p-)))
                        ) 2)
-               :y (/ (+ 
-                       (if (NaN? (js/parseInt (:y p))) 0 
-                         (js/parseInt (:y p))) 
-                       (if (NaN? (js/parseInt (:y p-))) 0 
-                         (js/parseInt (:y p-))) 
+               :y (/ (+
+                       (if (NaN? (js/parseInt (:y p))) 0
+                         (js/parseInt (:y p)))
+                       (if (NaN? (js/parseInt (:y p-))) 0
+                         (js/parseInt (:y p-)))
                        ) 2)
-               :z (/ (+ 
-                       (if (NaN? (js/parseInt (:z p))) 0 
-                         (js/parseInt (:z p))) 
-                       (if (NaN? (js/parseInt (:z p-))) 0 
-                         (js/parseInt (:z p-))) 
-                       ) 2)}) 
-            {:x 0 :y 0 :z 0} layer))) @current-layer)
+               :z (/ (+
+                       (if (NaN? (js/parseInt (:z p))) 0
+                         (js/parseInt (:z p)))
+                       (if (NaN? (js/parseInt (:z p-))) 0
+                         (js/parseInt (:z p-)))
+                       ) 2)})
+            {:x 0 :y 0 :z 0} layer)) @current-layer))
 
 (defn show-layer [layers dom-id current-layer]
   (let [dom (.getElementById js/document dom-id)
@@ -117,24 +117,24 @@
         width 640
         height 480
         camera (THREE.PerspectiveCamera. 75 (/ width height) 0.1 1000)
-        renderer (THREE.WebGLRenderer.)
+        renderer (if (NaN? (.-WebGLRenderingContext js/window)) (THREE.WebGLRenderer.) (THREE.CanvasRenderer.))
         render #(.render renderer scene camera)
         control (trackball-control camera render dom)
         center-point {:x 0 :y 0 :z 10}
-        animate (fn an[] 
+        animate (fn an[]
                   (js/requestAnimationFrame an)
                   (.update control)
                   (render))]
     (.setSize renderer width height)
     (set! (.-innerHTML dom) "")
-    (.appendChild dom (.-domElement renderer)) 
-    (update-scene scene layers current-layer) 
+    (.appendChild dom (.-domElement renderer))
+    (update-scene scene layers current-layer)
     ;need a function to set camera to center
     (set! (.-y (.-position camera))  -25)
     (set! (.-z (.-position camera))  25)
-    (.lookAt camera (THREE.Vector3. 
-                      (:x center-point) 
-                      (:y center-point) 
+    (.lookAt camera (THREE.Vector3.
+                      (:x center-point)
+                      (:y center-point)
                       (:z center-point)))
     (animate)
     ))
