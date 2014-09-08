@@ -1,5 +1,5 @@
 (ns embodier.core
-  (:require 
+  (:require
     [embodier.webcomponents :as web]
     [embodier.canvasdraw :as draw]
     [goog.events :as events]
@@ -12,14 +12,17 @@
 
 (secretary/set-config! :prefix "#")
 
-(defroute upload "/upload" []
-  (reset! web/routes (assoc web/default :upload-file true)))
+(defroute upload "/svg" []
+  (reset! web/routes (assoc web/default :svg-file true)))
 
-(defroute layers "/layers" [] 
+(defroute upload "/gcode" []
+  (reset! web/routes (assoc web/default :gcode-file true)))
+
+(defroute layers "/layers" []
   (reset! web/routes (assoc web/default :layer-view true)))
 
 (defroute "/" []
-  (reset! web/routes (assoc web/default :upload-file true)))
+  (reset! web/routes (assoc web/default :gcode-file true)))
 
 (def history (History.))
 

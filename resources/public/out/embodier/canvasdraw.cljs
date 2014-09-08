@@ -2,8 +2,9 @@
 
 (def THREE js/THREE)
 
-(defn draw-partics [points color]
+(defn draw-partics
   "given a collection of points ({:x ?, :y ?}, ...), returns a threejs ParticleSystem"
+  [points color]
   (let [geo (THREE.Geometry.)
         mat (THREE.ParticleSystemMaterial. (clj->js {:color color
                                                      :size 0.1}))
@@ -20,8 +21,9 @@
       (apply array p-list))
     partics))
 
-(defn draw-line [points color]
+(defn draw-line
   "given a collection of points ({:x ? :y ? :z ? :e ?} ...), returns a threejs line"
+  [points color]
   (let [geo (THREE.Geometry.)
         mat (THREE.LineBasicMaterial. (clj->js {:color color}))
         line (THREE.Line. geo mat)
@@ -40,8 +42,9 @@
       (apply array p-list))
     line))
 
-(defn first-layer-num [layers]
+(defn first-layer-num
   "given the layers of the model, return the number of first layer"
+  [layers]
   (loop [num 0]
     (if (or
           (not (empty?  (filter (fn [p]
@@ -83,11 +86,13 @@
             (dec i)))))))
 
 (defn NaN? [node]
+  "this is the js nil."
   (and (= (.call js/toString node) (str "[object Number]"))
        (js/eval (str node " != +" node ))))
 
-(defn get-center [layers current-layer]
+(defn get-center
   "given an array of {:x :y :z} points, find the center point"
+  [layers current-layer]
   (nth
   (for [layer @layers]
     (reduce (fn [p p-]

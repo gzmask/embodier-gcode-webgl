@@ -1,10 +1,11 @@
 (ns embodier.webcomponents
-  (:require 
+  (:require
     [embodier.fileapi :as file]
     [embodier.canvasdraw :as draw]
     [reagent.core :refer [atom]]))
 
-(def default {:upload-file false
+(def default {:gcode-file false
+              :svg-file false
               :layer-view false})
 
 (def routes (atom (assoc default :upload-file true)))
@@ -16,29 +17,42 @@
   [:div {:style {:font-size "35px"}} "Embodier"])
 
 (defn about []
-  [:a {:href "http://richever.ca/about#About"} "About Us"])
+  [:a {:href "http://gzmask.wordpress.com"} "About Me"])
 
 (defn github []
-  [:a {:href "https://github.com/gzmask"} "Github"])
+  [:a {:href "https://github.com/gzmask/embodier"} "Github"])
 
 (defn header []
-   [:div.row  
+   [:div.row
     [:div.col-md-2.col-md-offset-2 [logo]]
     [:div.col-md-1.col-md-offset-2 {:style {:background-color "#ccc"}} [about]]
     [:div.col-md-1 {:style {:background-color "#ccc"}} [github]]])
 
+(defn uploadsvg-button []
+  [:input#uploadsvg-button {:type "file"
+                         :name "files[]"
+                         :style {:color "#555"}
+                         :on-change #(file/setOnLoad (aget (.. % -target -files) 0) layers)}])
 (defn upload-button []
-  [:input#upload-button {:type "file" 
+  [:input#upload-button {:type "file"
                          :name "files[]"
                          :style {:color "#555"}
                          :on-change #(file/setOnLoad (aget (.. % -target -files) 0) layers)}])
 
-(defn file-dropper []
-  [:div 
-    [:div.row 
-     [:div.col-md-4.col-md-offset-1 
-      [:div#file-dropper.bcircle.circle_file [:span.glyphicon.glyphicon-hdd] " Upload file here"]]]
-    [:div.row 
+(defn svg-dropper []
+  [:div
+    [:div.row
+     [:div.col-md-4.col-md-offset-1
+      [:div#file-dropper.bcircle.circle_file [:span.glyphicon.glyphicon-hdd] " SVG Analysor"]]]
+    [:div.row
+     [:div.col-md-3.col-md-offset-3 [uploadsvg-button]]]])
+
+(defn gcode-dropper []
+  [:div
+    [:div.row
+     [:div.col-md-4.col-md-offset-1
+      [:div#file-dropper.bcircle.circle_file [:span.glyphicon.glyphicon-hdd] " Gcode Analysor"]]]
+    [:div.row
      [:div.col-md-3.col-md-offset-3 [upload-button]]]])
 
 (defn load-canvas [cb]
@@ -57,10 +71,10 @@
      [:span.input-group-addon name]]])
 
 (defn control-range! [name min max]
-  [:div.col-md-12 [:div.input-group 
-                   [:input {:type "range" 
-                            :name name 
-                            :value @current-layer-num 
+  [:div.col-md-12 [:div.input-group
+                   [:input {:type "range"
+                            :name name
+                            :value @current-layer-num
                             :on-change #(do
                                           (reset! current-layer-num (-> % .-target .-value))
                                           (draw/show-layer layers "layer-view-before" current-layer-num))
@@ -70,17 +84,17 @@
                    [:span.input-group-addon name ": " @current-layer-num]]])
 
 (defn layer-viewer []
-  [:div#layer-view.row 
+  [:div#layer-view.row
    [:div.col-md-8
-    [:div.row 
+    [:div.row
         [:div.col-md-11.col-md-offset-1 [layer-view-before]]]
-    [:div.row 
+    [:div.row
         [:span.col-md-offset-6.glyphicon.glyphicon-circle-arrow-down.btn-lg]]
-    [:div.row 
+    [:div.row
         [:div.col-md-11.col-md-offset-1 [layer-view-after]]]]
    [:div.col-md-4
     [:div.row
-      [control-cb "control one"] 
+      [control-cb "control one"]
       [control-cb "control two"]]
     [:div.row
       [control-cb "control three"]
@@ -90,12 +104,14 @@
     ]])
 
 (defn app []
-  [:div 
+  [:div
    [header]
    [:a {:href "#/"} "home"][:br]
-   [:a {:href "#/upload"} "upload"][:br]
+   [:a {:href "#/svg"} "svg"][:br]
+   [:a {:href "#/gcode"} "gcode"][:br]
    [:a {:href "#/layers"} "layers"][:br]
    (for [x (range 4)] ^{:key x} [:br])
-   (if (:layer-view @routes) [layer-viewer]) 
-   (if (:upload-file @routes) [file-dropper])
+   (if (:layer-view @routes) [layer-viewer])
+   (if (:gcode-file @routes) [gcode-dropper])
+   (if (:svg-file @routes) [svg-dropper])
    ])
