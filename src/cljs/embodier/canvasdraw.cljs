@@ -116,7 +116,9 @@
                        ) 2)})
             {:x 0 :y 0 :z 0} layer)) @current-layer))
 
-(defn show-layer [layers dom-id current-layer]
+(defn show-layer
+  [layers dom-id current-layer]
+  ;this function gets call every time a layer is changed, need fixing
   (let [dom (.getElementById js/document dom-id)
         scene (THREE.Scene.)
         width 640
