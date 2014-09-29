@@ -125,8 +125,8 @@
         width 640
         height 480
         camera (THREE.PerspectiveCamera. 75 (/ width height) 0.1 1000)
-        renderer (if (NaN? (.-WebGLRenderingContext js/window)) 
-                   (THREE.WebGLRenderer. (js-obj "canvas" canvas)) 
+        renderer (if (NaN? (.-WebGLRenderingContext js/window))
+                   (THREE.WebGLRenderer. (js-obj "canvas" canvas))
                    (THREE.CanvasRenderer. (js-obj "canvas" canvas)))
         render #(.render renderer scene camera)
         control (trackball-control camera render dom)

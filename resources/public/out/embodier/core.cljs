@@ -19,7 +19,9 @@
   (reset! web/routes (assoc web/default :gcode-file true)))
 
 (defroute layers "/layers" []
-  (reset! web/routes (assoc web/default :layer-view true)))
+  (do
+    (reset! web/routes (assoc web/default :layer-view true))
+    ))
 
 (defroute "/" []
   (reset! web/routes (assoc web/default :gcode-file true)))
@@ -30,3 +32,5 @@
   (fn [e] (secretary/dispatch! (.-token e))))
 
 (.setEnabled history true)
+
+(draw/show-layer web/layers "layer-view-before" web/current-layer-num)

@@ -12,6 +12,7 @@
 (def layers (atom nil))
 (def current-layer-num (atom 0))
 (def layer-count (atom 0))
+(def animation-id (atom nil))
 
 (defn logo []
   [:div {:style {:font-size "35px"}} "Embodier"])
@@ -55,15 +56,9 @@
     [:div.row
      [:div.col-md-3.col-md-offset-3 [upload-button]]]])
 
-(defn load-canvas [cb]
-  [:div 
-  [:canvas#mycanvas]
-  [:img {:src "data:image/gif;base64,R0lGODlhAQABAIAAAP///wAAACwAAAAAAQABAAACAkQBADs="
-         :on-load cb}]])
-
 (defn layer-view-before []
   [:div#layer-view-before.bcircle.circle_layer
-   [load-canvas #(draw/show-layer layers "layer-view-before" current-layer-num)]])
+   [:canvas#mycanvas]])
 
 (defn layer-view-after []
   [:div#layer-view-after.bcircle.circle_layer])
