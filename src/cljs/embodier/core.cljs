@@ -21,6 +21,7 @@
 (defroute layers "/layers" []
   (do
     (reset! web/routes (assoc web/default :layer-view true))
+    ;(draw/show-layer web/layers "layer-view-before" web/current-layer-num @three-scene)
     ))
 
 (defroute "/" []
@@ -32,5 +33,3 @@
   (fn [e] (secretary/dispatch! (.-token e))))
 
 (.setEnabled history true)
-
-(draw/show-layer web/layers "layer-view-before" web/current-layer-num)

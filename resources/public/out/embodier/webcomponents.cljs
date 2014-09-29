@@ -68,17 +68,26 @@
      [:span.input-group-addon name]]])
 
 (defn control-range! [name min max]
-  [:div.col-md-12 [:div.input-group
-                   [:input {:type "range"
-                            :name name
-                            :value @current-layer-num
-                            :on-change #(do
-                                          (reset! current-layer-num (-> % .-target .-value))
-                                          (draw/show-layer layers "layer-view-before" current-layer-num))
-                            :min min :max max
-                            :style {:padding-top "4px"}
-                            }]
-                   [:span.input-group-addon name ": " @current-layer-num]]])
+  (let [width 640
+        height 480
+        req-id (atom nil)
+        scene (atom (draw/THREE.Scene.))
+        camera (atom (draw/THREE.PerspectiveCamera. 75 (/ width height) 0.1 1000))
+        renderer (atom (if (draw/NaN? (.-WebGLRenderingContext js/window))
+                        (draw/THREE.WebGLRenderer.)
+                        (draw/THREE.CanvasRenderer.)))
+        ]
+    [:div.col-md-12 [:div.input-group
+                     [:input {:type "range"
+                              :name name
+                              :value @current-layer-num
+                              :on-change #(do
+                                            (reset! current-layer-num (-> % .-target .-value))
+                                            (draw/show-layer layers "layer-view-before" current-layer-num scene camera renderer req-id))
+                              :min min :max max
+                              :style {:padding-top "4px"}
+                              }]
+                     [:span.input-group-addon name ": " @current-layer-num]]]))
 
 (defn layer-viewer []
   [:div#layer-view.row

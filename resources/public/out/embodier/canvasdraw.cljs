@@ -117,34 +117,31 @@
             {:x 0 :y 0 :z 0} layer)) @current-layer))
 
 (defn show-layer
-  [layers dom-id current-layer]
+  [layers dom-id current-layer scene camera renderer req-id]
   ;this function gets call every time a layer is changed, need fixing
   (let [dom (.getElementById js/document dom-id)
-        canvas (.getElementById js/document "mycanvas")
-        scene (THREE.Scene.)
         width 640
         height 480
-        camera (THREE.PerspectiveCamera. 75 (/ width height) 0.1 1000)
-        renderer (if (NaN? (.-WebGLRenderingContext js/window))
-                   (THREE.WebGLRenderer. (js-obj "canvas" canvas))
-                   (THREE.CanvasRenderer. (js-obj "canvas" canvas)))
-        render #(.render renderer scene camera)
-        control (trackball-control camera render dom)
+        ;scene (THREE.Scene.)
+        ;camera (THREE.PerspectiveCamera. 75 (/ width height) 0.1 1000)
+        render #(.render @renderer @scene @camera)
+        control (trackball-control @camera render dom)
         center-point {:x 0 :y 0 :z 10}
         animate (fn an[]
-                  (js/requestAnimationFrame an)
+                  (reset! req-id (js/requestAnimationFrame an))
                   (.update control)
                   (render))]
-    (.setSize renderer width height)
+    (.setSize @renderer width height)
     (set! (.-innerHTML dom) "")
-    (.appendChild dom (.-domElement renderer))
-    (update-scene scene layers current-layer)
+    (.appendChild dom (.-domElement @renderer))
+    (update-scene @scene layers current-layer)
     ;need a function to set camera to center
-    (set! (.-y (.-position camera))  -25)
-    (set! (.-z (.-position camera))  25)
-    (.lookAt camera (THREE.Vector3.
+    (set! (.-y (.-position @camera))  -25)
+    (set! (.-z (.-position @camera))  25)
+    (.lookAt @camera (THREE.Vector3.
                       (:x center-point)
                       (:y center-point)
                       (:z center-point)))
+    (js/cancelAnimationFrame @req-id)
     (animate)
     ))
