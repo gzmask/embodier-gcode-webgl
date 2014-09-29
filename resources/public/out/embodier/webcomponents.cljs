@@ -56,8 +56,10 @@
      [:div.col-md-3.col-md-offset-3 [upload-button]]]])
 
 (defn load-canvas [cb]
+  [:div 
+  [:canvas#mycanvas]
   [:img {:src "data:image/gif;base64,R0lGODlhAQABAIAAAP///wAAACwAAAAAAQABAAACAkQBADs="
-         :on-load cb}])
+         :on-load cb}]])
 
 (defn layer-view-before []
   [:div#layer-view-before.bcircle.circle_layer

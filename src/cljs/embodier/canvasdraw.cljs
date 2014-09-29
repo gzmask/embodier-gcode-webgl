@@ -120,11 +120,14 @@
   [layers dom-id current-layer]
   ;this function gets call every time a layer is changed, need fixing
   (let [dom (.getElementById js/document dom-id)
+        canvas (.getElementById js/document "mycanvas")
         scene (THREE.Scene.)
         width 640
         height 480
         camera (THREE.PerspectiveCamera. 75 (/ width height) 0.1 1000)
-        renderer (if (NaN? (.-WebGLRenderingContext js/window)) (THREE.WebGLRenderer.) (THREE.CanvasRenderer.))
+        renderer (if (NaN? (.-WebGLRenderingContext js/window)) 
+                   (THREE.WebGLRenderer. (js-obj "canvas" canvas)) 
+                   (THREE.CanvasRenderer. (js-obj "canvas" canvas)))
         render #(.render renderer scene camera)
         control (trackball-control camera render dom)
         center-point {:x 0 :y 0 :z 10}
