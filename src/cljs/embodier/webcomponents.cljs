@@ -8,11 +8,19 @@
               :svg-file false
               :layer-view false})
 
+(def width 640) 
+(def height 480)
 (def routes (atom (assoc default :upload-file true)))
 (def layers (atom nil))
 (def current-layer-num (atom 0))
 (def layer-count (atom 0))
 (def animation-id (atom nil))
+(def req-id (atom nil))
+(def scene (atom (draw/THREE.Scene.)))
+(def camera (atom (draw/THREE.PerspectiveCamera. 75 (/ width height) 0.1 1000)))
+(def renderer (atom (if (draw/NaN? (.-WebGLRenderingContext js/window)) 
+                      (draw/THREE.WebGLRenderer.)
+                      (draw/THREE.CanvasRenderer.))))
 
 (defn logo []
   [:div {:style {:font-size "35px"}} "Embodier"])
@@ -68,15 +76,6 @@
      [:span.input-group-addon name]]])
 
 (defn control-range! [name min max]
-  (let [width 640
-        height 480
-        req-id (atom nil)
-        scene (atom (draw/THREE.Scene.))
-        camera (atom (draw/THREE.PerspectiveCamera. 75 (/ width height) 0.1 1000))
-        renderer (atom (if (draw/NaN? (.-WebGLRenderingContext js/window))
-                        (draw/THREE.WebGLRenderer.)
-                        (draw/THREE.CanvasRenderer.)))
-        ]
     [:div.col-md-12 [:div.input-group
                      [:input {:type "range"
                               :name name
@@ -87,7 +86,7 @@
                               :min min :max max
                               :style {:padding-top "4px"}
                               }]
-                     [:span.input-group-addon name ": " @current-layer-num]]]))
+                     [:span.input-group-addon name ": " @current-layer-num]]])
 
 (defn layer-viewer []
   [:div#layer-view.row
