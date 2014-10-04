@@ -94,6 +94,8 @@
     [:div.row
         [:div.col-md-11.col-md-offset-1 [layer-view-before]]]
     [:div.row
+        [:span.col-md-offset-6 "hold 'D' to drag"]]
+    [:div.row
         [:span.col-md-offset-6.glyphicon.glyphicon-circle-arrow-down.btn-lg]]
     [:div.row
         [:div.col-md-11.col-md-offset-1 [layer-view-after]]]]
