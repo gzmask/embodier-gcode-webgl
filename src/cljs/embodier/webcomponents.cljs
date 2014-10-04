@@ -13,7 +13,6 @@
 (def routes (atom (assoc default :upload-file true)))
 (def layers (atom nil))
 (def current-layer-num (atom 0))
-(def layer-count (atom 0))
 (def req-id (atom nil))
 (def req-id2 (atom nil))
 (def scene (atom (draw/THREE.Scene.)))
