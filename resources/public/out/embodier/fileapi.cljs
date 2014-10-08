@@ -16,22 +16,11 @@
           (inc counter)
           (:e (nth cmds counter)))))))
 
-(comment defn extrusionize [layers-cmds]
-  "partition each layer cmds according to extrusion directions(position/negative :e)"
-  (for [cmds layers-cmds]
-    (partition-by (fn [cmd]
-                    "if this cmd gives a positive extrusion"
-                    (if (> (:e cmd) (:e- cmd))
-                      true
-                      false))
-                  cmds)))
-
 (defn extrusionize
   "filter each layer cmds according to extrusion directions"
   [layers-cmds]
   (for [cmds layers-cmds]
-    (filter (fn [cmd]
-              "if this cmd gives a positive extrusion"
+    (filter (fn [cmd] ;if this cmd gives a positive extrusion
               (if (> (:e cmd) (:e- cmd))
                 true
                 false))
@@ -96,9 +85,10 @@
 
 (defn readFile [layers file]
   (let [raw-str (-> file .-target .-result)]
-    (reset! layers (-> raw-str s/split-lines filterG1 layered cmd-map collapseZ last-extrusion extrusionize))
+    ;(reset! layers (-> raw-str s/split-lines filterG1 layered cmd-map collapseZ last-extrusion extrusionize))
+    (reset! layers (-> raw-str s/split-lines filterG1 layered cmd-map collapseZ last-extrusion))
     ;(.log js/console (print-str (s/join "\n" @layers)))
-    ;(.log js/console (print-str (nth @layers 0)))
+    (.log js/console (print-str (s/join "\n" (nth @layers 1))))
     ;(.log js/console (print-str (nth @layers 2)))
     ))
 
