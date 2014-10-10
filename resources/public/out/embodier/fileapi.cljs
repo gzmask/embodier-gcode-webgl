@@ -2,7 +2,49 @@
   (:require
     [clojure.string :as s]))
 
-(defn last-extrusion
+(defn reverse-layerscmd 
+  "reverse each layers cmds"
+  [layers-cmds]
+  (for [cmds layers-cmds]
+    (reverse cmds)))
+
+(defn collapseY
+  "stores Y into each command"
+  [layers-cmds]
+  (for [cmds layers-cmds]
+    (loop [resultcmds nil
+           counter 0
+           last-y 0]
+      (if (= counter (count cmds))
+        resultcmds
+        (recur
+          (if (nil? (:y (nth cmds counter))) 
+            (cons (assoc (nth cmds counter) :y last-y) resultcmds)
+            (cons (nth cmds counter) resultcmds))
+          (inc counter)
+          (if (nil? (:y (nth cmds counter))) 
+            last-y 
+            (:y (nth cmds counter))))))))
+
+(defn collapseX
+  "stores X into each command"
+  [layers-cmds]
+  (for [cmds layers-cmds]
+    (loop [resultcmds nil
+           counter 0
+           last-x 0]
+      (if (= counter (count cmds))
+        resultcmds
+        (recur
+          (if (nil? (:x (nth cmds counter))) 
+            (cons (assoc (nth cmds counter) :x last-x) resultcmds)
+            (cons (nth cmds counter) resultcmds))
+          (inc counter)
+          (if (nil? (:x (nth cmds counter))) 
+            last-x 
+            (:x (nth cmds counter))))))))
+
+(defn collapseE
   "stores extrusions into each command"
   [layers-cmds]
   (for [cmds layers-cmds]
@@ -12,11 +54,15 @@
       (if (= counter (count cmds))
         resultcmds
         (recur
-          (cons (assoc (nth cmds counter) :e- last-extrusion) resultcmds)
+          (if (nil? (:e (nth cmds counter))) 
+            (cons (assoc (nth cmds counter) :e last-extrusion :e- last-extrusion) resultcmds)
+            (cons (assoc (nth cmds counter) :e- last-extrusion) resultcmds))
           (inc counter)
-          (:e (nth cmds counter)))))))
+          (if (nil? (:e (nth cmds counter))) 
+            last-extrusion 
+            (:e (nth cmds counter))))))))
 
-(defn extrusionize
+(defn remove-jumps
   "filter each layer cmds according to extrusion directions"
   [layers-cmds]
   (for [cmds layers-cmds]
@@ -35,12 +81,10 @@
     (if (= counter (count layers-cmds))
       (reverse (filter #(if (nil? (first %)) false true) resultcmds))
       (recur
-        (cons
+        (cons 
           (for [cmd (nth layers-cmds counter)]
-            (if (nil? (:z cmd))
-              (if (or (not (nil? (:x cmd))) (not (nil? (:y cmd))))
-                (assoc cmd :z last-z)
-                cmd)
+            (if (nil? (:z cmd)) 
+              (assoc cmd :z last-z)
               nil))
           resultcmds)
         (inc counter)
@@ -85,10 +129,9 @@
 
 (defn readFile [layers file]
   (let [raw-str (-> file .-target .-result)]
-    ;(reset! layers (-> raw-str s/split-lines filterG1 layered cmd-map collapseZ last-extrusion extrusionize))
-    (reset! layers (-> raw-str s/split-lines filterG1 layered cmd-map collapseZ last-extrusion))
+    (reset! layers (-> raw-str s/split-lines filterG1 layered cmd-map collapseZ collapseX collapseY collapseE reverse-layerscmd remove-jumps))
     ;(.log js/console (print-str (s/join "\n" @layers)))
-    (.log js/console (print-str (s/join "\n" (nth @layers 1))))
+    ;(.log js/console (print-str (nth @layers 1)))
     ;(.log js/console (print-str (nth @layers 2)))
     ))
 
