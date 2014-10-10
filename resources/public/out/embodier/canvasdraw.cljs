@@ -7,7 +7,7 @@
   [points color]
   (let [geo (THREE.Geometry.)
         mat (THREE.ParticleSystemMaterial. (clj->js {:color color
-                                                     :size 0.1}))
+                                                     :size 1}))
         partics (THREE.ParticleSystem. geo mat)
         points- (filter (fn [p] (if (or (nil? (:x p))
                                        (nil? (:y p))
@@ -78,7 +78,7 @@
           (loop [i (dec @current-layer)]
             (if (< i 0)
               nil
-              (recur (do (.add scene (draw-partics (nth @layers i) 0x0000aa))
+              (recur (do (.add scene (draw-line (nth @layers i) 0x008800))
                          (dec i))))))
         (recur
           (do

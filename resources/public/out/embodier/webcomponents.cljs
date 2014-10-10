@@ -8,7 +8,7 @@
               :svg-file false
               :layer-view false})
 
-(def width 640) 
+(def width 640)
 (def height 480)
 (def routes (atom (assoc default :upload-file true)))
 (def layers (atom nil))
@@ -18,10 +18,10 @@
 (def scene (atom (draw/THREE.Scene.)))
 (def scene2 (atom (draw/THREE.Scene.)))
 (def camera (atom (draw/THREE.PerspectiveCamera. 75 (/ width height) 0.1 1000)))
-(def renderer (atom (if (draw/NaN? (.-WebGLRenderingContext js/window)) 
+(def renderer (atom (if (draw/NaN? (.-WebGLRenderingContext js/window))
                       (draw/THREE.WebGLRenderer.)
                       (draw/THREE.CanvasRenderer.))))
-(def renderer2 (atom (if (draw/NaN? (.-WebGLRenderingContext js/window)) 
+(def renderer2 (atom (if (draw/NaN? (.-WebGLRenderingContext js/window))
                        (draw/THREE.WebGLRenderer.)
                        (draw/THREE.CanvasRenderer.))))
 
@@ -85,8 +85,8 @@
                               :value @current-layer-num
                               :on-change #(do
                                             (reset! current-layer-num (-> % .-target .-value))
-                                            (draw/show-layer layers "layer-view-before" current-layer-num scene camera renderer req-id) 
-                                            (draw/show-layer layers "layer-view-after" current-layer-num scene2 camera renderer2 req-id2))
+                                            (draw/show-layer layers "layer-view-before" current-layer-num scene camera renderer req-id))
+                                            ;(draw/show-layer layers "layer-view-after" current-layer-num scene2 camera renderer2 req-id2))
                               :min min :max max
                               :style {:padding-top "4px"}
                               }]
