@@ -2,6 +2,14 @@
   (:require
     [clojure.string :as s]))
 
+(defn abs [a]
+  (if (< a 0)
+    (- 0 a)
+    a))
+
+(defn d [log & logs]
+  (.log js/console "========debug========:" (apply print-str log logs)))
+
 (defn reverse-layerscmd 
   "reverse each layers cmds"
   [layers-cmds]
@@ -61,6 +69,19 @@
           (if (nil? (:e (nth cmds counter))) 
             last-extrusion 
             (:e (nth cmds counter))))))))
+
+(defn jump-not-too-long? [cmd cmd- length]
+  (let [dx (- (:x cmd) (:x cmd-))
+        dy (- (:y cmd) (:y cmd-))
+        dd (+ (* dx dx) (* dy dy))]
+    (> (* length length) dd)))
+
+(defn remove-long-jumps [layers-cmds]
+  (for [cmds layers-cmds]
+    (for [i (range 1 (dec (count cmds)))]
+      (if (jump-not-too-long? (nth cmds i) (nth cmds (dec i)) 5)
+        (nth cmds i)
+        (do (d (nth cmds i) (nth cmds (dec i))) nil)))))
 
 (defn remove-jumps
   "filter each layer cmds according to extrusion directions"
@@ -129,7 +150,8 @@
 
 (defn readFile [layers file]
   (let [raw-str (-> file .-target .-result)]
-    (reset! layers (-> raw-str s/split-lines filterG1 layered cmd-map collapseZ collapseX collapseY collapseE reverse-layerscmd remove-jumps))
+    ;(reset! layers (-> raw-str s/split-lines filterG1 layered cmd-map collapseZ collapseX collapseY collapseE reverse-layerscmd remove-jumps))
+    (reset! layers (-> raw-str s/split-lines filterG1 layered cmd-map collapseZ collapseX collapseY collapseE reverse-layerscmd remove-long-jumps))
     ;(.log js/console (print-str (s/join "\n" @layers)))
     ;(.log js/console (print-str (nth @layers 1)))
     ;(.log js/console (print-str (nth @layers 2)))
