@@ -1,15 +1,11 @@
-# gcode layer view
+# gcode layer viewer
 
-Transform a Gcode file of a 3d printable model into single extrusion.
+View Gcode extrusion paths in WebGL
 
 ## Usage
-open resources/public/index.html in any modern browser
+open resources/public/index.html in any modern browser that has WebGL enabled.
 
-## Design
-Using the slic3r's feature: --export-svg        Export a SVG file containing slices instead of G-code.
-to produce a single extrusion.
-
-## Repl how to
+## Debugging with Repl how to
 Using austin
 lein repl
 (cemerick.austin.repls/exec :exec-cmds ["open" "-ga" "/Applications/Google Chrome.app"])
