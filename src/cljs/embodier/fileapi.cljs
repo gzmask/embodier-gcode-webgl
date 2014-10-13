@@ -70,12 +70,6 @@
             last-extrusion 
             (:e (nth cmds counter))))))))
 
-(defn jump-not-too-long? [cmd cmd- length]
-  (let [dx (- (:x cmd) (:x cmd-))
-        dy (- (:y cmd) (:y cmd-))
-        dd (+ (* dx dx) (* dy dy))]
-    (> (* length length) dd)))
-
 (defn add-next
   "make single linked list according to extrusions"
   [layers-cmds]

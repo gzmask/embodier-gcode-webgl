@@ -12,9 +12,6 @@
 
 (secretary/set-config! :prefix "#")
 
-(defroute upload "/svg" []
-  (reset! web/routes (assoc web/default :svg-file true)))
-
 (defroute upload "/gcode" []
   (reset! web/routes (assoc web/default :gcode-file true)))
 
