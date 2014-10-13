@@ -18,12 +18,8 @@
 (def scene (atom (draw/THREE.Scene.)))
 (def scene2 (atom (draw/THREE.Scene.)))
 (def camera (atom (draw/THREE.PerspectiveCamera. 75 (/ width height) 0.1 1000)))
-(def renderer (atom (if (draw/NaN? (.-WebGLRenderingContext js/window))
-                      (draw/THREE.WebGLRenderer.)
-                      (draw/THREE.CanvasRenderer.))))
-(def renderer2 (atom (if (draw/NaN? (.-WebGLRenderingContext js/window))
-                       (draw/THREE.WebGLRenderer.)
-                       (draw/THREE.CanvasRenderer.))))
+(def renderer (atom (draw/THREE.WebGLRenderer.)))
+(def renderer2 (atom (draw/THREE.WebGLRenderer.)))
 
 (defn logo []
   [:div {:style {:font-size "35px"}} "Embodier"])

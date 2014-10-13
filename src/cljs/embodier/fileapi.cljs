@@ -63,8 +63,8 @@
         resultcmds
         (recur
           (if (nil? (:e (nth cmds counter))) 
-            (cons (assoc (nth cmds counter) :e last-extrusion :e- last-extrusion) resultcmds)
-            (cons (assoc (nth cmds counter) :e- last-extrusion) resultcmds))
+            (cons (assoc (nth cmds counter) :e last-extrusion) resultcmds)
+            (cons (nth cmds counter) resultcmds))
           (inc counter)
           (if (nil? (:e (nth cmds counter))) 
             last-extrusion 
@@ -76,22 +76,16 @@
         dd (+ (* dx dx) (* dy dy))]
     (> (* length length) dd)))
 
-(defn remove-long-jumps [layers-cmds]
-  (for [cmds layers-cmds]
-    (for [i (range 1 (dec (count cmds)))]
-      (if (jump-not-too-long? (nth cmds i) (nth cmds (dec i)) 5)
-        (nth cmds i)
-        (do (d (nth cmds i) (nth cmds (dec i))) nil)))))
-
-(defn remove-jumps
-  "filter each layer cmds according to extrusion directions"
+(defn add-next
+  "make single linked list according to extrusions"
   [layers-cmds]
   (for [cmds layers-cmds]
-    (filter (fn [cmd] ;if this cmd gives a positive extrusion
-              (if (> (:e cmd) (:e- cmd))
-                true
-                false))
-            cmds)))
+    (for [i (range (count cmds))]
+      (cond 
+        (= 0 i) (assoc (nth cmds i) :next (inc i))
+        (= (dec (count cmds)) i) (assoc (nth cmds i) :next nil)
+        (> (:e (nth cmds i)) (:e (nth cmds (dec i)))) (assoc (nth cmds i) :next (inc i))
+        :else (assoc (nth cmds i) :next nil)))))
 
 (defn collapseZ
   "collapse :z to all points"
@@ -150,10 +144,10 @@
 
 (defn readFile [layers file]
   (let [raw-str (-> file .-target .-result)]
-    ;(reset! layers (-> raw-str s/split-lines filterG1 layered cmd-map collapseZ collapseX collapseY collapseE reverse-layerscmd remove-jumps))
-    (reset! layers (-> raw-str s/split-lines filterG1 layered cmd-map collapseZ collapseX collapseY collapseE reverse-layerscmd remove-long-jumps))
+    (reset! layers (-> raw-str s/split-lines filterG1 layered cmd-map collapseZ collapseX collapseY collapseE reverse-layerscmd add-next))
+    ;(reset! layers (-> raw-str s/split-lines filterG1 layered cmd-map collapseZ collapseX collapseY collapseE reverse-layerscmd remove-long-jumps))
     ;(.log js/console (print-str (s/join "\n" @layers)))
-    ;(.log js/console (print-str (nth @layers 1)))
+    ;(d (nth @layers) 1)
     ;(.log js/console (print-str (nth @layers 2)))
     ))
 

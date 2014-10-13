@@ -2,45 +2,41 @@
 
 (def THREE js/THREE)
 
-(defn draw-partics
+(defn three-partics
   "given a collection of points ({:x ?, :y ?}, ...), returns a threejs ParticleSystem"
   [points color]
   (let [geo (THREE.Geometry.)
-        mat (THREE.ParticleSystemMaterial. (clj->js {:color color
-                                                     :size 1}))
-        partics (THREE.ParticleSystem. geo mat)
+        mat (THREE.ParticleBasicMaterial. (clj->js {:size 0.2, :color color})) 
         points- (filter (fn [p] (if (or (nil? (:x p))
                                        (nil? (:y p))
                                        (nil? (:z p)))
                                  false
                                  true))
                         points)
-        p-list (for [p points-] (THREE.Vector3. (:x p) (:y p) (:z p)))]
-    (set!
-      (-> geo .-vertices)
-      (apply array p-list))
+        p-list (for [p points-] (THREE.Vector3. (:x p) (:y p) (:z p)))
+        setup (set! (-> geo .-vertices) (apply array p-list))
+        partics (THREE.ParticleSystem. geo mat)]
     partics))
 
-(defn draw-line
-  "given a collection of points ({:x ? :y ? :z ? :e ?} ...), returns a threejs line"
+(defn three-line
+  "given two of points ({:x ? :y ? :z ?} ...), returns a threejs line"
   [points color]
   (let [geo (THREE.Geometry.)
         mat (THREE.LineBasicMaterial. (clj->js {:color color}))
         line (THREE.Line. geo mat)
-        points- (filter (fn [p]
-                          "filter out points missing one of x,y,z,e"
-                          (if (or (nil? (:x p))
-                                  (nil? (:y p))
-                                  (nil? (:z p))
-                                  (nil? (:e p)))
-                            false
-                            true))
-                        points)
-        p-list (for [p points-] (THREE.Vector3. (:x p) (:y p) (:z p)))]
+        p-list (for [p points] (THREE.Vector3. (:x p) (:y p) (:z p)))]
     (set!
       (-> geo .-vertices)
-      (apply array p-list))
+      (apply array p-list)) 
     line))
+
+(defn draw-lines 
+  "given cmds with :next, add lines to scene in pairs accordingly"
+  [cmds scene color]
+  (doseq [cmd cmds] 
+    (if (not (nil? (:next cmd)))
+      (let [p [cmd (nth cmds (:next cmd))]] 
+        (.add scene (three-line p color))))))
 
 (defn first-layer-num
   "given the layers of the model, return the number of first layer"
@@ -69,16 +65,18 @@
     (.addEventListener control "change" render)
     control))
 
-(defn update-scene [scene layers current-layer]
+(defn update-scene 
+  "add layers from file-api into the scene"
+  [scene layers current-layer]
   (let [children (.-children scene)]
     (loop [i (dec (count children))]
       (if (< i 0)
         (do
-          (.add scene (draw-line (nth @layers @current-layer) 0x00ff00))
+          (draw-lines (nth @layers @current-layer) scene 0x00ff00)
           (loop [i (dec @current-layer)]
             (if (< i 0)
               nil
-              (recur (do (.add scene (draw-line (nth @layers i) 0x008800))
+              (recur (do (.add scene (three-partics (nth @layers i) 0x000088))
                          (dec i))))))
         (recur
           (do
