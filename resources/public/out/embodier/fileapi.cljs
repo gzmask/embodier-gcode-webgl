@@ -70,6 +70,23 @@
             last-extrusion 
             (:e (nth cmds counter))))))))
 
+(defn collapseXYE
+  "stores XY into each command"
+  [layers-cmds]
+  (for [cmds layers-cmds]
+    (let [last-x (atom 0)
+          last-y (atom 0)
+          last-e (atom 0)] 
+      (for [cmd cmds]
+        (-> cmd 
+            (#(do (if (not (nil? (:x %))) (reset! last-x (:x %))) %))
+            (#(do (if (not (nil? (:y %))) (reset! last-y (:y %))) %))
+            (#(do (if (not (nil? (:e %))) (reset! last-e (:e %))) %))
+            (#(if (nil? (:x %)) (assoc % :x @last-x) %)) 
+            (#(if (nil? (:y %)) (assoc % :y @last-y) %)) 
+            (#(if (nil? (:e %)) (assoc % :e @last-e) %)))
+        ))))
+
 (defn add-next
   "make single linked list according to extrusions"
   [layers-cmds]
@@ -138,10 +155,11 @@
 
 (defn readFile [layers file]
   (let [raw-str (-> file .-target .-result)]
-    (reset! layers (-> raw-str s/split-lines filterG1 layered cmd-map collapseZ collapseX collapseY collapseE reverse-layerscmd add-next))
+    ;(reset! layers (-> raw-str s/split-lines filterG1 layered cmd-map collapseZ collapseX collapseY collapseE reverse-layerscmd add-next))
+    (reset! layers (-> raw-str s/split-lines filterG1 layered cmd-map collapseZ collapseXYE add-next))
     ;(reset! layers (-> raw-str s/split-lines filterG1 layered cmd-map collapseZ collapseX collapseY collapseE reverse-layerscmd remove-long-jumps))
     ;(.log js/console (print-str (s/join "\n" @layers)))
-    ;(d (nth @layers) 1)
+    ;(d (nth @layers 1))
     ;(.log js/console (print-str (nth @layers 2)))
     ))
 
