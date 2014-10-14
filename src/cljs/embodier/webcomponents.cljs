@@ -13,12 +13,6 @@
 (def layers (atom nil))
 (def current-layer-num (atom 0))
 (def req-id (atom nil))
-(def req-id2 (atom nil))
-(def scene (atom (draw/THREE.Scene.)))
-(def scene2 (atom (draw/THREE.Scene.)))
-(def camera (atom (draw/THREE.PerspectiveCamera. 75 (/ width height) 0.1 1000)))
-(def renderer (atom (draw/THREE.WebGLRenderer.)))
-(def renderer2 (atom (draw/THREE.WebGLRenderer.)))
 
 (defn logo []
   [:div {:style {:font-size "35px"}} "Gcode Viewer"])
@@ -38,7 +32,9 @@
   [:input#upload-button {:type "file"
                          :name "files[]"
                          :style {:color "#555"}
-                         :on-change #(file/setOnLoad (aget (.. % -target -files) 0) layers)}])
+                         :on-change #(do 
+                                       (file/setOnLoad (aget (.. % -target -files) 0) layers)
+                                       (reset! routes (assoc default :layer-view true)))}])
 
 (defn gcode-dropper []
   [:div
@@ -54,22 +50,23 @@
 
 (defn control-range! [name min max]
     [:div.col-md-10.col-md-offset-2 [:div.input-group
+                     [:span.input-group-addon "min:" min]
                      [:input {:type "range"
                               :name name
                               :value @current-layer-num
-                              :on-change #(do
-                                            (reset! current-layer-num (-> % .-target .-value))
-                                            (draw/show-layer layers "layer-view-before" current-layer-num scene camera renderer req-id))
+                              :on-change #(reset! current-layer-num (-> % .-target .-value))
+                              :on-mouse-out #(draw/show-layer layers "layer-view-before" current-layer-num req-id)
                               :min min :max max
                               :style {:padding-top "4px"}
                               }]
-                     [:span.input-group-addon name ": " @current-layer-num]]])
+                     [:span.input-group-addon "at:" @current-layer-num]
+                     [:span.input-group-addon "max:" max]]])
 
 (defn layer-viewer []
   [:div#layer-view.row
    [:div.col-md-8
     [:div.row 
-     [control-range! "layer" (draw/first-layer-num @layers) (dec (count @layers))]  ]
+     [control-range! "layer" 1 (dec (count @layers))]]
     [:div.row 
      [:div.col-md-11.col-md-offset-1 [layer-view-before]]]
     [:div.row 

@@ -16,10 +16,7 @@
   (reset! web/routes (assoc web/default :gcode-file true)))
 
 (defroute layers "/layers" []
-  (do
-    (reset! web/routes (assoc web/default :layer-view true))
-    ;(draw/show-layer web/layers "layer-view-before" web/current-layer-num @three-scene)
-    ))
+  (reset! web/routes (assoc web/default :layer-view true)))
 
 (defroute "/" []
   (reset! web/routes (assoc web/default :gcode-file true)))
