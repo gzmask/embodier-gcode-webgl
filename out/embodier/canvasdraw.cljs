@@ -2,6 +2,9 @@
 
 (def THREE js/THREE)
 
+(defn notify [text] 
+  (set! (.-innerHTML (.getElementById js/document "notification")) text))
+
 (defn three-partics
   "given a collection of points ({:x ?, :y ?}, ...), returns a threejs ParticleSystem"
   [points color]
@@ -55,8 +58,8 @@
           (draw-lines (nth @layers @current-layer) scene 0x00ff00)
           (loop [i (dec @current-layer)]
             (if (< i 0)
-              nil
-              (recur (do (.add scene (three-partics (nth @layers i) 0x000088))
+              (notify "Render is done.")
+              (recur (do (.add scene (three-partics (nth @layers i) 0x000088)) 
                          (dec i))))))
         (recur
           (do
@@ -99,7 +102,7 @@
                   (render))]
     (.setSize renderer width height)
     (set! (.-innerHTML dom) "")
-    (.appendChild dom (.-domElement renderer))
+    (.appendChild dom (.-domElement renderer)) 
     (update-scene scene layers current-layer)
     (set! (.-target control) (THREE.Vector3. (:x center-point) (:y center-point) (:z center-point)))
     (js/cancelAnimationFrame @req-id)
