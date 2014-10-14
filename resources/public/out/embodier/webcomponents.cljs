@@ -13,20 +13,22 @@
 (def layers (atom nil))
 (def current-layer-num (atom 0))
 (def req-id (atom nil))
+(defn notify [text] 
+  (set! (.-innerHTML (.getElementById js/document "notification")) text))
 
 (defn logo []
-  [:div {:style {:font-size "35px"}} "Gcode Viewer"])
+  [:div {:style {:font-size "18px"}} "Gcode Viewer"])
 
 (defn github []
   [:a {:href "https://github.com/gzmask/embodier"} "Github"])
 
 (defn header [] 
   [:div.row 
-   [:div.col-md-2 [logo]] 
    [:div.col-md-1 {:style {:background-color "#ccc"}} [:a {:href "#/"} "Home"]]
    [:div.col-md-1 {:style {:background-color "#ccc"}} [:a {:href "#/gcode"} "Gcode File"]]
    [:div.col-md-1 {:style {:background-color "#ccc"}} [:a {:href "#/layers"} "View Layers"]] 
-   [:div.col-md-1 {:style {:background-color "#ccc"}} [github]]])
+   [:div.col-md-1 {:style {:background-color "#ccc"}} [github]]
+   [:div.col-md-2 [logo]]])
 
 (defn upload-button []
   [:input#upload-button {:type "file"
@@ -54,7 +56,8 @@
                      [:input {:type "range"
                               :name name
                               :value @current-layer-num
-                              :on-change #(reset! current-layer-num (-> % .-target .-value))
+                              :on-change #(do (notify "Rendering...")
+                                              (reset! current-layer-num (-> % .-target .-value)))
                               :on-mouse-out #(draw/show-layer layers "layer-view-before" current-layer-num req-id)
                               :min min :max max
                               :style {:padding-top "4px"}
@@ -75,6 +78,8 @@
 (defn app []
   [:div
    [header]
+   [:div.row 
+    [:div#notification.col-md-12 {:style {:color "#888" :font-size "20px"}} " "]]
    (for [x (range 4)] ^{:key x} [:br])
    (if (:layer-view @routes) [layer-viewer])
    (if (:gcode-file @routes) [gcode-dropper])
