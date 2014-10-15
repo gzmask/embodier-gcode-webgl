@@ -9,6 +9,7 @@
                  [secretary "1.1.0"]
                  [reagent "0.4.2"]]
   :plugins [[lein-cljsbuild "1.0.2"]
+            [lein-marginalia "0.8.0"]
             [com.cemerick/austin "0.1.4"]]
   :source-paths ["src/clj"]
   :cljsbuild {
