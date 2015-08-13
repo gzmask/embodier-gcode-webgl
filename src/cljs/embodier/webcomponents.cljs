@@ -69,7 +69,7 @@
   [:div#layer-view.row
    [:div.col-md-8
     [:div.row 
-     [control-range! "layer" 1 (dec (count @layers))]]
+     [control-range! "layer" 0 (dec (count @layers))]]
     [:div.row 
      [:div.col-md-11.col-md-offset-1 [layer-view-before]]]
     [:div.row 

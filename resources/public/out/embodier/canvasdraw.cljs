@@ -55,11 +55,11 @@
     (loop [i (dec (count children))]
       (if (< i 0)
         (do
-          (draw-lines (nth @layers @current-layer) scene 0x00ff00)
+          (draw-lines (nth @layers @current-layer) scene 0x000000)
           (loop [i (dec @current-layer)]
             (if (< i 0)
               (notify "Render is done.")
-              (recur (do (.add scene (three-partics (nth @layers i) 0x000088)) 
+              (recur (do (.add scene (three-partics (nth @layers i) 0x555555))
                          (dec i))))))
         (recur
           (do
@@ -89,11 +89,12 @@
 (set! (.-y (.-position camera))  -25)
 (set! (.-z (.-position camera))  25)
 (def renderer (THREE.WebGLRenderer.))
+(.setClearColorHex renderer 0xcccccc 1)
 
 (defn show-layer
   [layers dom-id current-layer req-id]
   (let [dom (.getElementById js/document dom-id)
-        center-point (get-center (nth @layers @current-layer))
+        center-point {:x 0 :y 0 :z 0};(get-center (nth @layers @current-layer))
         render #(.render renderer scene camera)
         control (trackball-control camera render dom)
         animate (fn an[]
