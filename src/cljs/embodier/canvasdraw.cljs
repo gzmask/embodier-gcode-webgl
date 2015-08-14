@@ -2,6 +2,9 @@
 
 (def THREE js/THREE)
 
+(defn d [log & logs]
+  (.log js/console "========debug========:" (apply print-str log logs)))
+
 (defn notify [text] 
   (set! (.-innerHTML (.getElementById js/document "notification")) text))
 
@@ -89,12 +92,13 @@
 (set! (.-y (.-position camera))  -25)
 (set! (.-z (.-position camera))  25)
 (def renderer (THREE.WebGLRenderer.))
-(.setClearColorHex renderer 0xcccccc 1)
+(.setClearColor renderer 0xcccccc 1)
 
 (defn show-layer
   [layers dom-id current-layer req-id]
   (let [dom (.getElementById js/document dom-id)
         ;when (nth layers 0), index out of bounce
+        _ (d "current-layer:" (nth @layers 0))
         center-point (get-center (nth @layers @current-layer))
         render #(.render renderer scene camera)
         control (trackball-control camera render dom)
