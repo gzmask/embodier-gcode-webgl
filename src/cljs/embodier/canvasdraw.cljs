@@ -98,7 +98,7 @@
   [layers dom-id current-layer req-id]
   (let [dom (.getElementById js/document dom-id)
         ;when (nth layers 0), index out of bounce
-        _ (d "current-layer:" (nth @layers 0))
+        ;_ (d "current-layer:" (nth @layers 0))
         center-point (get-center (nth @layers @current-layer))
         render #(.render renderer scene camera)
         control (trackball-control camera render dom)
